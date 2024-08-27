@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('name')
+        .setName('rename')
         .setDescription('Renames the voice channel')
         .addStringOption(option =>
             option.setName('name')
