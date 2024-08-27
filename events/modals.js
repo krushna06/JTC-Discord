@@ -1,43 +1,71 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 
-module.exports = {
-    setLimitModal: async (interaction) => {
-        const modal = new ModalBuilder()
-            .setCustomId('setLimitModal')
-            .setTitle('Set User Limit');
+function setLimitModal(interaction) {
+    const modal = new ModalBuilder()
+        .setCustomId('setLimitModal')
+        .setTitle('Set Channel Limit');
 
-        const userLimitInput = new TextInputBuilder()
-            .setCustomId('userLimit')
-            .setLabel('Enter the user limit (1-99):')
-            .setStyle(TextInputStyle.Short)
-            .setMaxLength(2)
-            .setPlaceholder('Enter a number')
-            .setRequired(true);
+    const limitInput = new TextInputBuilder()
+        .setCustomId('userLimit')
+        .setLabel('Max users (1-99)')
+        .setStyle(TextInputStyle.Short);
 
-        const actionRow = new ActionRowBuilder().addComponents(userLimitInput);
+    const actionRow = new ActionRowBuilder().addComponents(limitInput);
 
-        modal.addComponents(actionRow);
+    modal.addComponents(actionRow);
 
-        await interaction.showModal(modal);
-    },
+    return interaction.showModal(modal);
+}
 
-    renameModal: async (interaction) => {
-        const modal = new ModalBuilder()
-            .setCustomId('renameModal')
-            .setTitle('Rename Voice Channel');
+function renameModal(interaction) {
+    const modal = new ModalBuilder()
+        .setCustomId('renameModal')
+        .setTitle('Rename Channel');
 
-        const channelNameInput = new TextInputBuilder()
-            .setCustomId('channelName')
-            .setLabel('Enter the new channel name:')
-            .setStyle(TextInputStyle.Short)
-            .setMaxLength(100)
-            .setPlaceholder('Enter a new name')
-            .setRequired(true);
+    const nameInput = new TextInputBuilder()
+        .setCustomId('channelName')
+        .setLabel('New Channel Name')
+        .setStyle(TextInputStyle.Short);
 
-        const actionRow = new ActionRowBuilder().addComponents(channelNameInput);
+    const actionRow = new ActionRowBuilder().addComponents(nameInput);
 
-        modal.addComponents(actionRow);
+    modal.addComponents(actionRow);
 
-        await interaction.showModal(modal);
-    }
-};
+    return interaction.showModal(modal);
+}
+
+function banModal(interaction) {
+    const modal = new ModalBuilder()
+        .setCustomId('banModal')
+        .setTitle('Ban User from Channel');
+
+    const userIdInput = new TextInputBuilder()
+        .setCustomId('userId')
+        .setLabel('User ID')
+        .setStyle(TextInputStyle.Short);
+
+    const actionRow = new ActionRowBuilder().addComponents(userIdInput);
+
+    modal.addComponents(actionRow);
+
+    return interaction.showModal(modal);
+}
+
+function permitModal(interaction) {
+    const modal = new ModalBuilder()
+        .setCustomId('permitModal')
+        .setTitle('Permit User to Channel');
+
+    const userIdInput = new TextInputBuilder()
+        .setCustomId('userId')
+        .setLabel('User ID')
+        .setStyle(TextInputStyle.Short);
+
+    const actionRow = new ActionRowBuilder().addComponents(userIdInput);
+
+    modal.addComponents(actionRow);
+
+    return interaction.showModal(modal);
+}
+
+module.exports = { setLimitModal, renameModal, banModal, permitModal };

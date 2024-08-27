@@ -1,5 +1,5 @@
-const { Events, ModalSubmitInteraction, ButtonInteraction } = require('discord.js');
-const { setLimitModal, renameModal } = require('./modals');
+const { Events, ButtonInteraction, ModalSubmitInteraction, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
+const { setLimitModal, renameModal, banModal, permitModal } = require('./modals');
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -44,17 +44,16 @@ module.exports = {
                         break;
 
                     case 'invite':
-                        await interaction.reply({ content: `Here is the invite link: ${channel.createInvite()}`, ephemeral: true });
+                        const invite = await channel.createInvite();
+                        await interaction.reply({ content: `Here is the invite link: ${invite.url}`, ephemeral: true });
                         break;
 
                     case 'ban':
-                        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: false });
-                        await interaction.reply({ content: 'Channel banned!', ephemeral: true });
+                        await banModal(interaction);
                         break;
 
                     case 'permit':
-                        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: true });
-                        await interaction.reply({ content: 'Channel permitted!', ephemeral: true });
+                        await permitModal(interaction);
                         break;
 
                     case 'hide':
@@ -103,6 +102,34 @@ module.exports = {
                     } else {
                         await interaction.reply({ content: 'You need to be in a voice channel to use this modal.', ephemeral: true });
                     }
+                }
+            } else if (modalId === 'banModal') {
+                const userId = interaction.fields.getTextInputValue('userId');
+                const user = await interaction.guild.members.fetch(userId).catch(() => null);
+                if (!user) {
+                    await interaction.reply({ content: 'Invalid user ID.', ephemeral: true });
+                    return;
+                }
+                const channel = interaction.member.voice.channel;
+                if (channel) {
+                    await channel.permissionOverwrites.edit(user, { Connect: false });
+                    await interaction.reply({ content: `User <@${userId}> banned from the channel.`, ephemeral: true });
+                } else {
+                    await interaction.reply({ content: 'You need to be in a voice channel to use this modal.', ephemeral: true });
+                }
+            } else if (modalId === 'permitModal') {
+                const userId = interaction.fields.getTextInputValue('userId');
+                const user = await interaction.guild.members.fetch(userId).catch(() => null);
+                if (!user) {
+                    await interaction.reply({ content: 'Invalid user ID.', ephemeral: true });
+                    return;
+                }
+                const channel = interaction.member.voice.channel;
+                if (channel) {
+                    await channel.permissionOverwrites.edit(user, { Connect: true });
+                    await interaction.reply({ content: `User <@${userId}> permitted to join the channel.`, ephemeral: true });
+                } else {
+                    await interaction.reply({ content: 'You need to be in a voice channel to use this modal.', ephemeral: true });
                 }
             }
         }
