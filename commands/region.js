@@ -14,8 +14,8 @@ module.exports = {
         }
 
         const regions = [
-            'brazil', 'europe', 'hongkong', 'india', 'japan', 'london', 'middleeast', 'northamerica',
-            'rus', 'singapore', 'southafrica', 'sydney', 'us-central', 'us-east', 'us-south', 'us-west'
+            'automatic', 'brazil', 'hongkong', 'india', 'japan', 'rotterdam', 'russia', 'singapore',
+            'southafrica', 'sydney', 'us-central', 'us-east', 'us-south', 'us-west'
         ];
 
         const options = regions.map(region => new StringSelectMenuOptionBuilder()
