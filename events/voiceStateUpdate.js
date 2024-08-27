@@ -1,11 +1,18 @@
+const fs = require('fs');
+const path = require('path');
 const config = require('../config.json');
+
+const dataPath = path.join(__dirname, '../data.json');
+let channelData = require(dataPath);
+
+const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
 
 module.exports = {
     name: 'voiceStateUpdate',
     async execute(oldState, newState) {
         const jtcChannelId = config.jtcChannelId;
 
-        if (newState.channelId === jtcChannelId) {
+        if (newState.channelId === jtcChannelId && !oldState.channelId) {
             const member = newState.member;
             const guild = member.guild;
 
@@ -26,14 +33,35 @@ module.exports = {
             });
 
             await member.voice.setChannel(channel);
+
+            channelData.channels[channel.id] = {
+                ownerId: member.id
+            };
+            saveData();
         }
 
-        if (
-            oldState.channelId &&
-            oldState.channel.members.size === 0 &&
-            oldState.channel.name.endsWith("'s Channel")
-        ) {
-            await oldState.channel.delete();
+        if (oldState.channelId) {
+            const oldChannel = oldState.guild.channels.cache.get(oldState.channelId);
+
+            if (!oldChannel) return; 
+
+            if (oldChannel.members.size === 0 && oldChannel.name.endsWith("'s Channel")) {
+                const ownerId = channelData.channels[oldChannel.id]?.ownerId;
+
+                if (ownerId && ownerId === oldState.member.id) {
+                    delete channelData.channels[oldChannel.id];
+                    saveData();
+                }
+
+                await oldChannel.delete();
+            } else if (oldChannel.members.size > 0 && oldChannel.name.endsWith("'s Channel")) {
+                const ownerId = channelData.channels[oldChannel.id]?.ownerId;
+
+                if (ownerId && ownerId === oldState.member.id) {
+                    channelData.channels[oldChannel.id].ownerId = null;
+                    saveData();
+                }
+            }
         }
     }
 };
