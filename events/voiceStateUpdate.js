@@ -35,7 +35,8 @@ module.exports = {
             await member.voice.setChannel(channel);
 
             channelData.channels[channel.id] = {
-                ownerId: member.id
+                ownerId: member.id,
+                isTemporary: true
             };
             saveData();
         }
@@ -45,7 +46,7 @@ module.exports = {
 
             if (!oldChannel) return; 
 
-            if (oldChannel.members.size === 0 && oldChannel.name.endsWith("'s Channel")) {
+            if (oldChannel.members.size === 0 && channelData.channels[oldChannel.id]?.isTemporary) {
                 const ownerId = channelData.channels[oldChannel.id]?.ownerId;
 
                 if (ownerId && ownerId === oldState.member.id) {
@@ -54,13 +55,6 @@ module.exports = {
                 }
 
                 await oldChannel.delete();
-            } else if (oldChannel.members.size > 0 && oldChannel.name.endsWith("'s Channel")) {
-                const ownerId = channelData.channels[oldChannel.id]?.ownerId;
-
-                if (ownerId && ownerId === oldState.member.id) {
-                    channelData.channels[oldChannel.id].ownerId = null;
-                    saveData();
-                }
             }
         }
     }
