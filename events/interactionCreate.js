@@ -1,4 +1,4 @@
-const { Events, ButtonInteraction, ModalSubmitInteraction } = require('discord.js');
+const { Events, ButtonInteraction, ModalSubmitInteraction, StringSelectMenuInteraction } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const { setLimitModal, renameModal, banModal, permitModal, claimModal, transferModal } = require('./modals');
@@ -79,6 +79,8 @@ module.exports = {
                         }
                     } else if (buttonId === 'transfer') {
                         await transferModal(interaction);
+                    } else if (buttonId === 'region') {
+                        await interaction.reply({ content: 'You need to use the /region command to change the region.', ephemeral: true });
                     } else {
                         await interaction.reply({ content: 'Unknown action.', ephemeral: true });
                     }
@@ -191,6 +193,23 @@ module.exports = {
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'There was an error processing this modal.', ephemeral: true });
+            }
+        } else if (interaction.isStringSelectMenu()) {
+            if (interaction.customId === 'regionSelect') {
+                const channel = interaction.member.voice.channel;
+                if (!channel) {
+                    await interaction.reply({ content: 'You need to be in a voice channel to change its region.', ephemeral: true });
+                    return;
+                }
+
+                const region = interaction.values[0];
+                try {
+                    await channel.setRTCRegion(region);
+                    await interaction.reply({ content: `Voice channel region changed to ${region}.`, ephemeral: true });
+                } catch (error) {
+                    console.error(error);
+                    await interaction.reply({ content: 'There was an error while changing the region.', ephemeral: true });
+                }
             }
         }
     }
