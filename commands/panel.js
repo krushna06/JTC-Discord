@@ -22,7 +22,8 @@ module.exports = {
         const row3 = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('name').setLabel('Rename').setStyle(ButtonStyle.Secondary),
             new ButtonBuilder().setCustomId('claim').setLabel('Claim').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('transfer').setLabel('Transfer').setStyle(ButtonStyle.Secondary)
+            new ButtonBuilder().setCustomId('transfer').setLabel('Transfer').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('region').setLabel('Change Region').setStyle(ButtonStyle.Secondary)
         );
 
         await interaction.reply({

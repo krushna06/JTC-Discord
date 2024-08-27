@@ -1,4 +1,4 @@
-const { Events, ButtonInteraction, ModalSubmitInteraction, StringSelectMenuInteraction } = require('discord.js');
+const { Events, ButtonInteraction, ModalSubmitInteraction, StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const { setLimitModal, renameModal, banModal, permitModal, claimModal, transferModal } = require('./modals');
@@ -80,7 +80,29 @@ module.exports = {
                     } else if (buttonId === 'transfer') {
                         await transferModal(interaction);
                     } else if (buttonId === 'region') {
-                        await interaction.reply({ content: 'You need to use the /region command to change the region.', ephemeral: true });
+                        // Create and send the region selection menu
+                        const regions = [
+                            'brazil', 'europe', 'hongkong', 'india', 'japan', 'london', 'middleeast', 'northamerica',
+                            'rus', 'singapore', 'southafrica', 'sydney', 'us-central', 'us-east', 'us-south', 'us-west'
+                        ];
+
+                        const options = regions.map(region => new StringSelectMenuOptionBuilder()
+                            .setLabel(region.charAt(0).toUpperCase() + region.slice(1))
+                            .setValue(region)
+                        );
+
+                        const selectMenu = new StringSelectMenuBuilder()
+                            .setCustomId('regionSelect')
+                            .setPlaceholder('Select a region')
+                            .addOptions(options);
+
+                        const row = new ActionRowBuilder().addComponents(selectMenu);
+
+                        await interaction.reply({
+                            content: 'Select the new region for the voice channel:',
+                            components: [row],
+                            ephemeral: true
+                        });
                     } else {
                         await interaction.reply({ content: 'Unknown action.', ephemeral: true });
                     }
