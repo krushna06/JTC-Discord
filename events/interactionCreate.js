@@ -80,7 +80,6 @@ module.exports = {
                     } else if (buttonId === 'transfer') {
                         await transferModal(interaction);
                     } else if (buttonId === 'region') {
-                        // Create and send the region selection menu
                         const regions = [
                             'brazil', 'europe', 'hongkong', 'india', 'japan', 'london', 'middleeast', 'northamerica',
                             'rus', 'singapore', 'southafrica', 'sydney', 'us-central', 'us-east', 'us-south', 'us-west'
