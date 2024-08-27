@@ -1,28 +1,23 @@
-const { PermissionsBitField } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-const dataPath = path.join(__dirname, '../data.json');
-let channelData = require(dataPath);
-
-const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-    data: {
-        name: 'ban',
-    },
+    data: new SlashCommandBuilder()
+        .setName('ban')
+        .setDescription('Bans a user from joining the voice channel')
+        .addUserOption(option =>
+            option.setName('user')
+                .setDescription('The user to ban')
+                .setRequired(true)),
     async execute(interaction) {
-        const userId = interaction.options.getUser('user').id;
-        const channel = interaction.channel;
-        const channelInfo = channelData.channels[channel.id];
-
-        if (!channelInfo || channelInfo.ownerId !== interaction.user.id) {
-            return interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
+        const channel = interaction.member.voice.channel;
+        const user = interaction.options.getUser('user');
+        if (channel) {
+            await channel.permissionOverwrites.edit(user.id, {
+                Connect: false,
+            });
+            await interaction.reply({ content: `${user.username} has been banned from the channel!`, ephemeral: true });
+        } else {
+            await interaction.reply({ content: 'You are not in a voice channel!', ephemeral: true });
         }
-
-        await channel.permissionOverwrites.edit(userId, {
-            Connect: false,
-        });
-
-        await interaction.reply({ content: 'User banned from the channel.', ephemeral: true });
-    }
+    },
 };

@@ -1,27 +1,18 @@
-const { PermissionsBitField } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-const dataPath = path.join(__dirname, '../data.json');
-let channelData = require(dataPath);
-
-const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-    data: {
-        name: 'hide',
-    },
+    data: new SlashCommandBuilder()
+        .setName('hide')
+        .setDescription('Hides the voice channel from everyone'),
     async execute(interaction) {
-        const channel = interaction.channel;
-        const channelInfo = channelData.channels[channel.id];
-
-        if (!channelInfo || channelInfo.ownerId !== interaction.user.id) {
-            return interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
+        const channel = interaction.member.voice.channel;
+        if (channel) {
+            await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
+                ViewChannel: false,
+            });
+            await interaction.reply({ content: 'Channel hidden!', ephemeral: true });
+        } else {
+            await interaction.reply({ content: 'You are not in a voice channel!', ephemeral: true });
         }
-
-        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
-            ViewChannel: false,
-        });
-
-        await interaction.reply({ content: 'Channel hidden.', ephemeral: true });
-    }
+    },
 };
