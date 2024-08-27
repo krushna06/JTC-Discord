@@ -1,16 +1,27 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
+const dataPath = path.join(__dirname, '../data.json');
+let channelData = require(dataPath);
+
+const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('lock')
-        .setDescription('Locks the voice channel'),
-    async execute(interaction) {
-        const channel = interaction.member.voice.channel;
-        if (channel) {
-            await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: false });
-            await interaction.reply({ content: 'Channel locked!', ephemeral: true });
-        } else {
-            await interaction.reply({ content: 'You are not in a voice channel!', ephemeral: true });
-        }
+    data: {
+        name: 'lock',
     },
+    async execute(interaction) {
+        const channel = interaction.channel;
+        const channelInfo = channelData.channels[channel.id];
+
+        if (!channelInfo || channelInfo.ownerId !== interaction.user.id) {
+            return interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
+        }
+
+        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
+            Connect: false,
+        });
+
+        await interaction.reply({ content: 'Channel locked.', ephemeral: true });
+    }
 };
