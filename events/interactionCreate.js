@@ -1,4 +1,4 @@
-const { Events, ModalSubmitInteraction } = require('discord.js');
+const { Events, ModalSubmitInteraction, ButtonInteraction } = require('discord.js');
 const { setLimitModal, renameModal } = require('./modals');
 
 module.exports = {
@@ -41,6 +41,30 @@ module.exports = {
 
                     case 'name':
                         await renameModal(interaction);
+                        break;
+
+                    case 'invite':
+                        await interaction.reply({ content: `Here is the invite link: ${channel.createInvite()}`, ephemeral: true });
+                        break;
+
+                    case 'ban':
+                        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: false });
+                        await interaction.reply({ content: 'Channel banned!', ephemeral: true });
+                        break;
+
+                    case 'permit':
+                        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: true });
+                        await interaction.reply({ content: 'Channel permitted!', ephemeral: true });
+                        break;
+
+                    case 'hide':
+                        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: false });
+                        await interaction.reply({ content: 'Channel hidden!', ephemeral: true });
+                        break;
+
+                    case 'unhide':
+                        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: true });
+                        await interaction.reply({ content: 'Channel unhidden!', ephemeral: true });
                         break;
 
                     default:
