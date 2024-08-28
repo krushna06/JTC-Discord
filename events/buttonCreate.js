@@ -1,5 +1,5 @@
 const { setLimitModal, renameModal, banModal, permitModal, transferModal } = require('./modalBuilder');
-const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
+const { createRegionSelectMenu } = require('./selectMenuBuilder');
 const fs = require('fs');
 const path = require('path');
 
@@ -85,26 +85,10 @@ const handleButtonInteraction = async (interaction, channelData) => {
                 if (ownerId && ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
-                    const regions = [
-                        'automatic', 'brazil', 'hongkong', 'india', 'japan', 'rotterdam', 'russia', 'singapore',
-                        'southafrica', 'sydney', 'us-central', 'us-east', 'us-south', 'us-west'
-                    ];
-
-                    const options = regions.map(region => new StringSelectMenuOptionBuilder()
-                        .setLabel(region.charAt(0).toUpperCase() + region.slice(1))
-                        .setValue(region)
-                    );
-
-                    const selectMenu = new StringSelectMenuBuilder()
-                        .setCustomId('regionSelect')
-                        .setPlaceholder('Select a region')
-                        .addOptions(options);
-
-                    const row = new ActionRowBuilder().addComponents(selectMenu);
-
+                    const regionSelectMenu = createRegionSelectMenu();
                     await interaction.reply({
                         content: 'Select the new region for the voice channel:',
-                        components: [row],
+                        components: [regionSelectMenu],
                         ephemeral: true
                     });
                 }
