@@ -53,3 +53,5 @@ client.once('ready', async () => {
 });
 
 client.login(config.token);
+
+require('./server');
