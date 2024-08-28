@@ -43,21 +43,19 @@ module.exports = {
         if (oldState.channelId) {
             const oldChannel = oldState.guild.channels.cache.get(oldState.channelId);
 
-            if (!oldChannel) return; 
+            if (!oldChannel) return;
 
-            if (oldChannel.members.size === 0 && oldChannel.name.endsWith("'s Channel")) {
-                const ownerId = channelData.channels[oldChannel.id]?.ownerId;
+            const channelInfo = channelData.channels[oldChannel.id];
 
-                if (ownerId && ownerId === oldState.member.id) {
+            if (oldChannel.members.size === 0 && channelInfo) {
+                if (channelInfo.ownerId === oldState.member.id) {
                     delete channelData.channels[oldChannel.id];
                     saveData();
                 }
 
                 await oldChannel.delete();
-            } else if (oldChannel.members.size > 0 && oldChannel.name.endsWith("'s Channel")) {
-                const ownerId = channelData.channels[oldChannel.id]?.ownerId;
-
-                if (ownerId && ownerId === oldState.member.id) {
+            } else if (oldChannel.members.size > 0 && channelInfo) {
+                if (channelInfo.ownerId === oldState.member.id) {
                     channelData.channels[oldChannel.id].ownerId = null;
                     saveData();
                 }
