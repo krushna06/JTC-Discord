@@ -2,11 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { setLimitModal, renameModal, banModal, permitModal, claimModal, transferModal } = require('./modalBuilder');
 
-// Define path and load channelData
 const dataPath = path.join(__dirname, '../data.json');
 let channelData = require(dataPath);
 
-// Save data function
 const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
 
 const handleModalSubmit = async (interaction) => {
@@ -79,7 +77,7 @@ const handleModalSubmit = async (interaction) => {
                     await interaction.reply({ content: 'You are already the owner of this channel.', ephemeral: true });
                 } else {
                     channelData.channels[channelId].ownerId = interaction.user.id;
-                    saveData(); // Save updated data
+                    saveData();
                     await interaction.reply({ content: `You have claimed ownership of the voice channel ${channel.name}.`, ephemeral: true });
                 }
             } else {
