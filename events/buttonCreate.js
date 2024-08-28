@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const dataPath = path.join(__dirname, '../data.json');
+const channelData = require(dataPath);
 const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
 
 const handleButtonInteraction = async (interaction, channelData) => {
@@ -71,6 +72,13 @@ const handleButtonInteraction = async (interaction, channelData) => {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
                     await transferModal(interaction);
+                }
+            } else if (buttonId === 'invite') {
+                if (ownerId && ownerId !== interaction.user.id) {
+                    await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
+                } else {
+                    const invite = await channel.createInvite({ maxAge: 0, maxUses: 0 });
+                    await interaction.reply({ content: `Here is your invite link: ${invite.url}`, ephemeral: true });
                 }
             } else {
                 await interaction.reply({ content: 'Unknown button.', ephemeral: true });
