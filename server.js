@@ -2,8 +2,10 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const packageJson = require('./package.json');
-
+const cors = require('cors');
 const app = express();
+
+app.use(cors());
 const port = 3000;
 
 const commandsPath = path.join(__dirname, 'commands');
