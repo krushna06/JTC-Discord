@@ -1,5 +1,6 @@
 const { setLimitModal, renameModal, banModal, permitModal, transferModal } = require('./modalBuilder');
 const { createRegionSelectMenu } = require('./selectMenuBuilder');
+const { handleClaimButton } = require('../handlers/claimHandler');
 const fs = require('fs');
 const path = require('path');
 
@@ -7,7 +8,7 @@ const dataPath = path.join(__dirname, '../data.json');
 const channelData = require(dataPath);
 const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
 
-const handleButtonInteraction = async (interaction, channelData) => {
+const handleButtonInteraction = async (interaction) => {
     const buttonId = interaction.customId;
     const channel = interaction.member.voice.channel;
 
@@ -92,6 +93,8 @@ const handleButtonInteraction = async (interaction, channelData) => {
                         ephemeral: true
                     });
                 }
+            } else if (buttonId === 'claim') {
+                await handleClaimButton(interaction, channelData);
             } else {
                 await interaction.reply({ content: 'Unknown button.', ephemeral: true });
             }
