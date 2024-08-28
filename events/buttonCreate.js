@@ -1,4 +1,5 @@
 const { setLimitModal, renameModal, banModal, permitModal, transferModal } = require('./modalBuilder');
+const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -79,6 +80,33 @@ const handleButtonInteraction = async (interaction, channelData) => {
                 } else {
                     const invite = await channel.createInvite({ maxAge: 0, maxUses: 0 });
                     await interaction.reply({ content: `Here is your invite link: ${invite.url}`, ephemeral: true });
+                }
+            } else if (buttonId === 'region') {
+                if (ownerId && ownerId !== interaction.user.id) {
+                    await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
+                } else {
+                    const regions = [
+                        'automatic', 'brazil', 'hongkong', 'india', 'japan', 'rotterdam', 'russia', 'singapore',
+                        'southafrica', 'sydney', 'us-central', 'us-east', 'us-south', 'us-west'
+                    ];
+
+                    const options = regions.map(region => new StringSelectMenuOptionBuilder()
+                        .setLabel(region.charAt(0).toUpperCase() + region.slice(1))
+                        .setValue(region)
+                    );
+
+                    const selectMenu = new StringSelectMenuBuilder()
+                        .setCustomId('regionSelect')
+                        .setPlaceholder('Select a region')
+                        .addOptions(options);
+
+                    const row = new ActionRowBuilder().addComponents(selectMenu);
+
+                    await interaction.reply({
+                        content: 'Select the new region for the voice channel:',
+                        components: [row],
+                        ephemeral: true
+                    });
                 }
             } else {
                 await interaction.reply({ content: 'Unknown button.', ephemeral: true });
