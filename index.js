@@ -19,16 +19,33 @@ const rest = new REST({ version: '10' }).setToken(config.token);
 
 (async () => {
     try {
-        console.log('Started refreshing global application (/) commands.');
+        const { default: chalk } = await import('chalk');
+        const { default: Table } = await import('cli-table3');
+
+        console.log(chalk.yellow('Started refreshing global commands.'));
 
         await rest.put(
             Routes.applicationCommands(config.clientId),
             { body: commands },
         );
 
-        console.log('Successfully reloaded global application (/) commands.');
+        console.log(chalk.green('Successfully reloaded global commands.'));
+
+        const table = new Table({
+            head: ['Type', 'Count'],
+            colWidths: [20, 10]
+        });
+
+        table.push(
+            ['Commands', commands.length],
+            ['Events', eventFiles.length]
+        );
+
+        console.log(table.toString());
+
     } catch (error) {
-        console.error(error);
+        const { default: chalk } = await import('chalk');
+        console.error(chalk.red('Error reloading global commands:'), error);
     }
 })();
 
@@ -41,5 +58,10 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args, client));
     }
 }
+
+client.once('ready', async () => {
+    const { default: chalk } = await import('chalk');
+    console.log(chalk.cyan(`Logged in as ${client.user.tag}`));
+});
 
 client.login(config.token);
