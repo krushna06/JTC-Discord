@@ -56,3 +56,6 @@ The bot processes different types of interactions using event handlers:
 - **Dynamic Data Handling**: The bot maintains and updates channel data dynamically to reflect changes in voice channel ownership and settings.
 - **Interactive UI**: Provides users with an easy-to-use interface for managing voice channels without the need to repeatedly invoke commands.
 - **Error Handling**: Includes error handling mechanisms to manage issues such as invalid user IDs, permissions errors, and interactions with non-existent channels.
+
+> [!WARNING]
+> This is a single-guild-bot, multi-guild will not work!
