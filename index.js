@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord
 const fs = require('fs');
 const path = require('path');
 const config = require('./config.json');
+const { logStatus, logMessage } = require('./handlers/consoleHandler');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 client.commands = new Collection();
@@ -19,33 +20,21 @@ const rest = new REST({ version: '10' }).setToken(config.token);
 
 (async () => {
     try {
-        const { default: chalk } = await import('chalk');
-        const { default: Table } = await import('cli-table3');
-
-        console.log(chalk.yellow('Started refreshing global commands.'));
+        await logMessage('Started refreshing global commands.', 'yellow');
 
         await rest.put(
             Routes.applicationCommands(config.clientId),
             { body: commands },
         );
 
-        console.log(chalk.green('Successfully reloaded global commands.'));
+        await logMessage('Successfully reloaded global commands.', 'green');
 
-        const table = new Table({
-            head: ['Type', 'Count'],
-            colWidths: [20, 10]
-        });
-
-        table.push(
-            ['Commands', commands.length],
-            ['Events', eventFiles.length]
-        );
-
-        console.log(table.toString());
+        const eventFiles = fs.readdirSync(path.join(__dirname, 'events')).filter(file => file.endsWith('.js'));
+        await logStatus(commands.length, eventFiles.length);
 
     } catch (error) {
-        const { default: chalk } = await import('chalk');
-        console.error(chalk.red('Error reloading global commands:'), error);
+        await logMessage('Error reloading global commands:', 'red');
+        console.error(error);
     }
 })();
 
@@ -60,8 +49,7 @@ for (const file of eventFiles) {
 }
 
 client.once('ready', async () => {
-    const { default: chalk } = await import('chalk');
-    console.log(chalk.cyan(`Logged in as ${client.user.tag}`));
+    await logMessage(`Logged in as ${client.user.tag}`, 'cyan');
 });
 
 client.login(config.token);
