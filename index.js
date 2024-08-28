@@ -50,8 +50,7 @@ for (const file of eventFiles) {
 
 client.once('ready', async () => {
     await logMessage(`Logged in as ${client.user.tag}`, 'cyan');
+    require('./server')(client);
 });
 
 client.login(config.token);
-
-require('./server');
