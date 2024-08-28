@@ -2,5 +2,6 @@
     "token": "",
     "clientId": "",
     "guildId": "",
-    "jtcChannelId": ""
+    "jtcChannelId": "",
+    "api": true
 }  

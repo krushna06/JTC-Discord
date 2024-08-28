@@ -50,7 +50,12 @@ for (const file of eventFiles) {
 
 client.once('ready', async () => {
     await logMessage(`Logged in as ${client.user.tag}`, 'cyan');
-    require('./server')(client);
+
+    if (config.api) {
+        require('./server')(client);
+    } else {
+        console.log('API server is disabled in config.');
+    }
 });
 
 client.login(config.token);
