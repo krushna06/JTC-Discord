@@ -1,7 +1,7 @@
 const { Events } = require('discord.js');
 const path = require('path');
 const { handleButtonInteraction } = require('./buttonCreate');
-const { handleModalSubmit } = require('./modalBuilder');
+const { handleModalSubmit } = require('./modalCreate');
 
 const dataPath = path.join(__dirname, '../data.json');
 let channelData = require(dataPath);

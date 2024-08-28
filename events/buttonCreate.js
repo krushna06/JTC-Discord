@@ -46,31 +46,31 @@ const handleButtonInteraction = async (interaction, channelData) => {
                 if (ownerId && ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
-                    await interaction.showModal(setLimitModal);
+                    await setLimitModal(interaction);
                 }
             } else if (buttonId === 'rename') {
                 if (ownerId && ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
-                    await interaction.showModal(renameModal);
+                    await renameModal(interaction);
                 }
             } else if (buttonId === 'ban') {
                 if (ownerId && ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
-                    await interaction.showModal(banModal);
+                    await banModal(interaction);
                 }
             } else if (buttonId === 'permit') {
                 if (ownerId && ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
-                    await interaction.showModal(permitModal);
+                    await permitModal(interaction);
                 }
             } else if (buttonId === 'transfer') {
                 if (ownerId && ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
-                    await interaction.showModal(transferModal);
+                    await transferModal(interaction);
                 }
             } else {
                 await interaction.reply({ content: 'Unknown button.', ephemeral: true });
