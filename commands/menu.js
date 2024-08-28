@@ -1,15 +1,10 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('menu')
-        .setDescription('Sends a control panel for managing voice channels'),
+        .setDescription('Sends the channel management menu with buttons'),
     async execute(interaction) {
-        if (!interaction.member.permissions.has('MANAGE_GUILD')) {
-            await interaction.reply({ content: 'You need the `Manage Server` permission to use this command.', ephemeral: true });
-            return;
-        }
-
         const row1 = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('lock').setLabel('Lock').setStyle(ButtonStyle.Secondary),
             new ButtonBuilder().setCustomId('unlock').setLabel('Unlock').setStyle(ButtonStyle.Secondary),
@@ -31,8 +26,14 @@ module.exports = {
             new ButtonBuilder().setCustomId('region').setLabel('Change Region').setStyle(ButtonStyle.Secondary)
         );
 
+        const embed = new EmbedBuilder()
+            .setColor('#2F3136')
+            .setTitle('Voice Channel Management')
+            .setDescription('Manage your voice channels using these buttons:')
+            .setFooter({ text: 'Click the buttons below to perform actions on your voice channel.' });
+
         await interaction.reply({
-            content: 'Manage your voice channels using these buttons:',
+            embeds: [embed],
             components: [row1, row2, row3],
             ephemeral: false
         });
