@@ -1,6 +1,10 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const { performance } = require('perf_hooks');
+
+const { client } = require('./index');
+const packageJson = require('./package.json');
 
 const app = express();
 const port = 3000;
@@ -18,7 +22,19 @@ app.get('/api/v1/info', (req, res) => {
     }
 
     const commandFiles = files.filter(file => file.endsWith('.js'));
-    res.json({ numberOfCommands: commandFiles.length });
+    const numberOfCommands = commandFiles.length;
+
+    const uptime = process.uptime();
+    const startTime = performance.now();
+    const latency = performance.now() - startTime;
+    const botVersion = packageJson.version;
+
+    res.json({
+      numberOfCommands,
+      uptime: `${Math.floor(uptime)} seconds`,
+      latency: `${Math.round(latency)} ms`,
+      version: botVersion,
+    });
   });
 });
 
