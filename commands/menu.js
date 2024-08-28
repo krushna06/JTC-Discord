@@ -17,24 +17,24 @@ module.exports = {
             return interaction.reply({ content: 'You need to specify a valid text channel.', ephemeral: true });
         }
         const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('lock').setLabel('Lock').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('unlock').setLabel('Unlock').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('hide').setLabel('Hide').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('unhide').setLabel('Unhide').setStyle(ButtonStyle.Secondary)
+            new ButtonBuilder().setCustomId('lock').setEmoji('🔒').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('unlock').setEmoji('🔓').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('hide').setEmoji('🙈').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('unhide').setEmoji('🙉').setStyle(ButtonStyle.Secondary)
         );
 
         const row2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('setLimit').setLabel('Set Limit').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('invite').setLabel('Invite').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('ban').setLabel('Ban').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('permit').setLabel('Permit').setStyle(ButtonStyle.Secondary)
+            new ButtonBuilder().setCustomId('setLimit').setEmoji('🔢').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('invite').setEmoji('📩').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('ban').setEmoji('🚫').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('permit').setEmoji('✅').setStyle(ButtonStyle.Secondary)
         );
 
         const row3 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('rename').setLabel('Rename').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('claim').setLabel('Claim').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('transfer').setLabel('Transfer').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('region').setLabel('Change Region').setStyle(ButtonStyle.Secondary)
+            new ButtonBuilder().setCustomId('rename').setEmoji('✏️').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('claim').setEmoji('🏷️').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('transfer').setEmoji('🔄').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('region').setEmoji('🌍').setStyle(ButtonStyle.Secondary)
         );
 
         const embed = new EmbedBuilder()
