@@ -48,12 +48,10 @@ module.exports = {
             const channelInfo = channelData.channels[oldChannel.id];
 
             if (oldChannel.members.size === 0 && channelInfo) {
-                if (channelInfo.ownerId === oldState.member.id) {
-                    delete channelData.channels[oldChannel.id];
-                    saveData();
-                }
-
                 await oldChannel.delete();
+
+                delete channelData.channels[oldChannel.id];
+                saveData();
             } else if (oldChannel.members.size > 0 && channelInfo) {
                 if (channelInfo.ownerId === oldState.member.id) {
                     channelData.channels[oldChannel.id].ownerId = null;
