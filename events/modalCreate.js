@@ -1,6 +1,15 @@
+const fs = require('fs');
+const path = require('path');
 const { setLimitModal, renameModal, banModal, permitModal, claimModal, transferModal } = require('./modalBuilder');
 
-const handleModalSubmit = async (interaction, channelData) => {
+// Define path and load channelData
+const dataPath = path.join(__dirname, '../data.json');
+let channelData = require(dataPath);
+
+// Save data function
+const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
+
+const handleModalSubmit = async (interaction) => {
     const modalId = interaction.customId;
 
     try {
@@ -67,10 +76,10 @@ const handleModalSubmit = async (interaction, channelData) => {
             const channel = interaction.guild.channels.cache.get(channelId);
             if (channel && channel.type === 'GUILD_VOICE') {
                 if (channelData.channels[channelId].ownerId) {
-                    await interaction.reply({ content: 'This channel already has an owner.', ephemeral: true });
+                    await interaction.reply({ content: 'You are already the owner of this channel.', ephemeral: true });
                 } else {
                     channelData.channels[channelId].ownerId = interaction.user.id;
-                    saveData();
+                    saveData(); // Save updated data
                     await interaction.reply({ content: `You have claimed ownership of the voice channel ${channel.name}.`, ephemeral: true });
                 }
             } else {
