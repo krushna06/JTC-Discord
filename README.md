@@ -3,14 +3,23 @@
 ## Table of Contents
 
 1. [Introduction](#introduction)
-2. [How the VC are Saved (Database)](#how-the-vc-is-saved)
-3. [How the Menu Command Works](#how-the-menu-command-works)
-4. [Handling Interactions](#handling-interactions)
-5. [Additional Features](#additional-features)
+2. [Screenshots](#screenshots)
+3. [How the VC are Saved (Database)](#how-the-vc-is-saved)
+4. [How the Menu Command Works](#how-the-menu-command-works)
+5. [Handling Interactions](#handling-interactions)
+6. [Additional Features](#additional-features)
 
 ## Introduction
 
 The Discord Voice Channel Management Bot provides an enhanced interface for managing voice channels within a Discord server. This bot allows users to perform various actions on voice channels using both command inputs and interactive buttons. Features include locking/unlocking channels, setting user limits, inviting users, and more.
+
+## Screenshots:
+
+| ![alt text](.github/screenshots/image.png) | ![alt text](.github/screenshots/image-1.png) | ![alt text](.github/screenshots/image-2.png) |
+|:------------------------------------------:|:--------------------------------------------:|:--------------------------------------------:|
+| ![alt text](.github/screenshots/image-3.png) | ![alt text](.github/screenshots/image-5.png) | ![alt text](.github/screenshots/image-4.png) |
+|                                            |                                            |                                            |
+
 
 ## How the VC is Saved (Database)
 
