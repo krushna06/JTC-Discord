@@ -3,14 +3,19 @@ const path = require('path');
 const config = require('../config.json');
 
 const dataPath = path.join(__dirname, '../data.json');
-let channelData = require(dataPath);
+let guildData = require(dataPath);
 
-const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(channelData, null, 2));
+const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(guildData, null, 2));
 
 module.exports = {
     name: 'voiceStateUpdate',
     async execute(oldState, newState) {
-        const jtcChannelId = config.jtcChannelId;
+        const guildId = newState.guild.id;
+        const guildConfig = guildData.guilds[guildId];
+
+        if (!guildConfig) return;
+
+        const jtcChannelId = guildConfig.jtcChannelId;
 
         if (newState.channelId === jtcChannelId && !oldState.channelId) {
             const member = newState.member;
@@ -34,7 +39,7 @@ module.exports = {
 
             await member.voice.setChannel(channel);
 
-            channelData.channels[channel.id] = {
+            guildConfig.channels[channel.id] = {
                 ownerId: member.id
             };
             saveData();
@@ -45,16 +50,16 @@ module.exports = {
 
             if (!oldChannel) return;
 
-            const channelInfo = channelData.channels[oldChannel.id];
+            const channelInfo = guildData.guilds[guildId].channels[oldChannel.id];
 
             if (oldChannel.members.size === 0 && channelInfo) {
                 await oldChannel.delete();
 
-                delete channelData.channels[oldChannel.id];
+                delete guildData.guilds[guildId].channels[oldChannel.id];
                 saveData();
             } else if (oldChannel.members.size > 0 && channelInfo) {
                 if (channelInfo.ownerId === oldState.member.id) {
-                    channelData.channels[oldChannel.id].ownerId = null;
+                    guildData.guilds[guildId].channels[oldChannel.id].ownerId = null;
                     saveData();
                 }
             }

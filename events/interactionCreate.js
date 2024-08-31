@@ -3,9 +3,10 @@ const path = require('path');
 const { handleButtonInteraction } = require('./buttonCreate');
 const { handleModalSubmit } = require('./modalCreate');
 const { handleMenuButtonInteraction } = require('./menuCreate');
+const { execute: setupJTC } = require('../commands/setup-jtc');
 
 const dataPath = path.join(__dirname, '../data.json');
-let channelData = require(dataPath);
+let guildData = require(dataPath);
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -21,13 +22,21 @@ module.exports = {
                 await interaction.reply({ content: 'There was an error executing this command.', ephemeral: true });
             }
         } else if (interaction.isButton()) {
-            if (interaction.customId.startsWith('menu_')) {
-                await handleMenuButtonInteraction(interaction);
-            } else {
-                await handleButtonInteraction(interaction, channelData);
+            const guildId = interaction.guild.id;
+            const guildConfig = guildData.guilds[guildId];
+            if (guildConfig) {
+                if (interaction.customId.startsWith('menu_')) {
+                    await handleMenuButtonInteraction(interaction);
+                } else {
+                    await handleButtonInteraction(interaction, guildConfig);
+                }
             }
         } else if (interaction.isModalSubmit()) {
-            await handleModalSubmit(interaction, channelData);
+            const guildId = interaction.guild.id;
+            const guildConfig = guildData.guilds[guildId];
+            if (guildConfig) {
+                await handleModalSubmit(interaction, guildConfig);
+            }
         } else if (interaction.isStringSelectMenu()) {
             if (interaction.customId === 'regionSelect') {
                 const channel = interaction.member.voice.channel;
