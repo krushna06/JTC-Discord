@@ -3,7 +3,6 @@ const path = require('path');
 const { handleButtonInteraction } = require('./buttonCreate');
 const { handleModalSubmit } = require('./modalCreate');
 const { handleMenuButtonInteraction } = require('./menuCreate');
-const { execute: setupJTC } = require('../commands/setup-jtc');
 
 const dataPath = path.join(__dirname, '../data.json');
 let guildData = require(dataPath);
