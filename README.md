@@ -67,4 +67,5 @@ The bot processes different types of interactions using event handlers:
 - **Error Handling**: Includes error handling mechanisms to manage issues such as invalid user IDs, permissions errors, and interactions with non-existent channels.
 
 > [!WARNING]
-> This is a single-guild-bot, multi-guild will not work!
+> This is a multi-guild-bot. If you wish to use single-guild, move to this [branch](https://github.com/krushna06/JTC-Discord/tree/Single-Guild).
+> I won't be updating the single-guild.
