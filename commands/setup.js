@@ -10,33 +10,71 @@ const saveData = () => fs.writeFileSync(dataPath, JSON.stringify(guildData, null
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setup')
-        .setDescription('Sets up a new JTC category with a voice channel and a control panel.'),
+        .setDescription('Sets up a new JTC category with a voice channel and a control panel.')
+        .addChannelOption(option =>
+            option.setName('voicechannel')
+                .setDescription('Select a voice channel to set as the JTC (Join To Create) channel')
+                .setRequired(false)
+                .addChannelTypes(ChannelType.GuildVoice))
+        .addChannelOption(option =>
+            option.setName('textchannel')
+                .setDescription('Select a text channel to set up the control panel')
+                .setRequired(false)
+                .addChannelTypes(ChannelType.GuildText)),
     
     async execute(interaction) {
         if (!interaction.member.permissions.has('Administrator')) {
-            // console.log(`User ${interaction.user.tag} tried to use /setup without the required permissions.`);
             return interaction.reply({ content: 'You need to be an administrator to use this command.', ephemeral: true });
         }
 
-        let jtcCategory = interaction.guild.channels.cache.find(channel => channel.name === 'JTC' && channel.type === ChannelType.GuildCategory);
-        if (!jtcCategory) {
-            jtcCategory = await interaction.guild.channels.create({
-                name: 'JTC',
-                type: ChannelType.GuildCategory
+        const voiceChannelOption = interaction.options.getChannel('voicechannel');
+        const textChannelOption = interaction.options.getChannel('textchannel');
+
+        let jtcVoiceChannel;
+        let controlPanelChannel;
+
+        if (voiceChannelOption) {
+            jtcVoiceChannel = voiceChannelOption;
+        } else {
+            let jtcCategory = interaction.guild.channels.cache.find(channel => channel.name === 'JTC' && channel.type === ChannelType.GuildCategory);
+            if (!jtcCategory) {
+                jtcCategory = await interaction.guild.channels.create({
+                    name: 'JTC',
+                    type: ChannelType.GuildCategory
+                });
+            }
+
+            jtcVoiceChannel = await interaction.guild.channels.create({
+                name: 'Join to Create',
+                type: ChannelType.GuildVoice,
+                parent: jtcCategory.id
             });
         }
 
-        const jtcVoiceChannel = await interaction.guild.channels.create({
-            name: 'Join to Create',
-            type: ChannelType.GuildVoice,
-            parent: jtcCategory.id
-        });
+        if (textChannelOption) {
+            controlPanelChannel = textChannelOption;
+        } else {
+            if (!voiceChannelOption) {
+                let jtcCategory = interaction.guild.channels.cache.find(channel => channel.name === 'JTC' && channel.type === ChannelType.GuildCategory);
+                if (!jtcCategory) {
+                    jtcCategory = await interaction.guild.channels.create({
+                        name: 'JTC',
+                        type: ChannelType.GuildCategory
+                    });
+                }
 
-        const controlPanelChannel = await interaction.guild.channels.create({
-            name: 'control-panel',
-            type: ChannelType.GuildText,
-            parent: jtcCategory.id
-        });
+                controlPanelChannel = await interaction.guild.channels.create({
+                    name: 'control-panel',
+                    type: ChannelType.GuildText,
+                    parent: jtcCategory.id
+                });
+            } else {
+                controlPanelChannel = await interaction.guild.channels.create({
+                    name: 'control-panel',
+                    type: ChannelType.GuildText
+                });
+            }
+        }
 
         if (!guildData.guilds) {
             guildData.guilds = {};
@@ -49,8 +87,6 @@ module.exports = {
         };
 
         saveData();
-
-        // console.log(`JTC setup completed for guild ${interaction.guild.id}.`);
 
         const embed = new EmbedBuilder()
             .setColor('#2F3136')
@@ -84,6 +120,7 @@ module.exports = {
                 embeds: [embed],
                 components: [row1, row2, row3]
             });
+
             await interaction.reply({ content: `JTC setup is complete. Voice channel created as 'Join to Create' and control panel is in #${controlPanelChannel.name}.`, ephemeral: true });
         } catch (error) {
             console.error(error);
