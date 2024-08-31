@@ -15,83 +15,60 @@ const handleMenuButtonInteraction = async (interaction) => {
         const channelId = channel.id;
         const ownerId = channelData.channels[channelId]?.ownerId;
 
+        if (!ownerId) {
+            await interaction.reply({ content: 'This channel does not have an owner recorded in the data.', ephemeral: true });
+            return;
+        }
+
         try {
             if (buttonId === 'lock') {
-                if (ownerId && ownerId !== interaction.user.id) {
+                if (ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
                     await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: false });
                     await interaction.reply({ content: 'Channel locked!', ephemeral: true });
                 }
             } else if (buttonId === 'unlock') {
-                if (ownerId && ownerId !== interaction.user.id) {
+                if (ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
                     await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: true });
                     await interaction.reply({ content: 'Channel unlocked!', ephemeral: true });
                 }
             } else if (buttonId === 'hide') {
-                if (ownerId && ownerId !== interaction.user.id) {
+                if (ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
                     await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: false });
                     await interaction.reply({ content: 'Channel hidden!', ephemeral: true });
                 }
             } else if (buttonId === 'unhide') {
-                if (ownerId && ownerId !== interaction.user.id) {
+                if (ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
                     await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: true });
                     await interaction.reply({ content: 'Channel unhidden!', ephemeral: true });
                 }
             } else if (buttonId === 'setLimit') {
-                if (ownerId && ownerId !== interaction.user.id) {
+                if (ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
                     await interaction.reply({ content: 'Please provide a limit in the next modal.', ephemeral: true });
                 }
             } else if (buttonId === 'invite') {
-                if (ownerId && ownerId !== interaction.user.id) {
+                if (ownerId !== interaction.user.id) {
                     await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
                 } else {
                     const invite = await channel.createInvite({ maxAge: 0, maxUses: 0 });
                     await interaction.reply({ content: `Here is your invite link: ${invite.url}`, ephemeral: true });
                 }
-            } else if (buttonId === 'ban') {
-                if (ownerId && ownerId !== interaction.user.id) {
-                    await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
-                } else {
-                    await interaction.reply({ content: 'Please provide a user ID to ban in the next modal.', ephemeral: true });
-                }
-            } else if (buttonId === 'permit') {
-                if (ownerId && ownerId !== interaction.user.id) {
-                    await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
-                } else {
-                    await interaction.reply({ content: 'Please provide a user ID to permit in the next modal.', ephemeral: true });
-                }
-            } else if (buttonId === 'rename') {
-                if (ownerId && ownerId !== interaction.user.id) {
-                    await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
-                } else {
-                    await interaction.reply({ content: 'Please provide a new name in the next modal.', ephemeral: true });
-                }
             } else if (buttonId === 'claim') {
-                if (ownerId && ownerId !== interaction.user.id) {
-                    await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
+                if (!channelData.channels[channelId]) {
+                    channelData.channels[channelId] = { ownerId: interaction.user.id };
+                    saveData();
+                    await interaction.reply({ content: 'You have claimed ownership of this channel.', ephemeral: true });
                 } else {
-                    await interaction.reply({ content: 'Please provide the channel ID in the next modal.', ephemeral: true });
-                }
-            } else if (buttonId === 'transfer') {
-                if (ownerId && ownerId !== interaction.user.id) {
-                    await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
-                } else {
-                    await interaction.reply({ content: 'Please provide the new owner\'s user ID in the next modal.', ephemeral: true });
-                }
-            } else if (buttonId === 'region') {
-                if (ownerId && ownerId !== interaction.user.id) {
-                    await interaction.reply({ content: 'You are not the owner of this channel.', ephemeral: true });
-                } else {
-                    await interaction.reply({ content: 'Please select the new region from the dropdown menu.', ephemeral: true });
+                    await interaction.reply({ content: 'This channel is already owned by someone else.', ephemeral: true });
                 }
             } else {
                 await interaction.reply({ content: 'Unknown button.', ephemeral: true });
