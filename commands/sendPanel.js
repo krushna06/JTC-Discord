@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = re
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('panel')
+        .setName('sendpanel')
         .setDescription('Sends the channel management panel'),
     async execute(interaction) {
         const row1 = new ActionRowBuilder().addComponents(
