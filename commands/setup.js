@@ -13,14 +13,10 @@ module.exports = {
         .setDescription('Sets up a new JTC category with a voice channel and a control panel.')
         .addChannelOption(option =>
             option.setName('voicechannel')
-                .setDescription('Select a voice channel to set as the JTC (Join To Create) channel')
-                .setRequired(false)
-                .addChannelTypes(ChannelType.GuildVoice))
+                .setDescription('The voice channel to set as JTC'))
         .addChannelOption(option =>
             option.setName('textchannel')
-                .setDescription('Select a text channel to set up the control panel')
-                .setRequired(false)
-                .addChannelTypes(ChannelType.GuildText)),
+                .setDescription('The text channel to send the control panel')),
     
     async execute(interaction) {
         if (!interaction.member.permissions.has('Administrator')) {
@@ -30,51 +26,29 @@ module.exports = {
         const voiceChannelOption = interaction.options.getChannel('voicechannel');
         const textChannelOption = interaction.options.getChannel('textchannel');
 
-        let jtcVoiceChannel;
-        let controlPanelChannel;
+        if (guildData.guilds && guildData.guilds[interaction.guild.id]) {
+            return interaction.reply({ content: 'JTC setup already exists for this guild.', ephemeral: true });
+        }
 
-        if (voiceChannelOption) {
-            jtcVoiceChannel = voiceChannelOption;
-        } else {
-            let jtcCategory = interaction.guild.channels.cache.find(channel => channel.name === 'JTC' && channel.type === ChannelType.GuildCategory);
-            if (!jtcCategory) {
-                jtcCategory = await interaction.guild.channels.create({
-                    name: 'JTC',
-                    type: ChannelType.GuildCategory
-                });
-            }
-
-            jtcVoiceChannel = await interaction.guild.channels.create({
-                name: 'Join to Create',
-                type: ChannelType.GuildVoice,
-                parent: jtcCategory.id
+        let jtcCategory = interaction.guild.channels.cache.find(channel => channel.name === 'JTC' && channel.type === ChannelType.GuildCategory);
+        if (!jtcCategory) {
+            jtcCategory = await interaction.guild.channels.create({
+                name: 'JTC',
+                type: ChannelType.GuildCategory
             });
         }
 
-        if (textChannelOption) {
-            controlPanelChannel = textChannelOption;
-        } else {
-            if (!voiceChannelOption) {
-                let jtcCategory = interaction.guild.channels.cache.find(channel => channel.name === 'JTC' && channel.type === ChannelType.GuildCategory);
-                if (!jtcCategory) {
-                    jtcCategory = await interaction.guild.channels.create({
-                        name: 'JTC',
-                        type: ChannelType.GuildCategory
-                    });
-                }
+        const jtcVoiceChannel = voiceChannelOption || await interaction.guild.channels.create({
+            name: 'Join to Create',
+            type: ChannelType.GuildVoice,
+            parent: jtcCategory.id
+        });
 
-                controlPanelChannel = await interaction.guild.channels.create({
-                    name: 'control-panel',
-                    type: ChannelType.GuildText,
-                    parent: jtcCategory.id
-                });
-            } else {
-                controlPanelChannel = await interaction.guild.channels.create({
-                    name: 'control-panel',
-                    type: ChannelType.GuildText
-                });
-            }
-        }
+        const controlPanelChannel = textChannelOption || await interaction.guild.channels.create({
+            name: 'control-panel',
+            type: ChannelType.GuildText,
+            parent: jtcCategory.id
+        });
 
         if (!guildData.guilds) {
             guildData.guilds = {};
@@ -135,7 +109,6 @@ module.exports = {
                 embeds: [embed],
                 components: [row1, row2, row3]
             });
-
             await interaction.reply({ content: `JTC setup is complete. Voice channel created as 'Join to Create' and control panel is in #${controlPanelChannel.name}.`, ephemeral: true });
         } catch (error) {
             console.error(error);
