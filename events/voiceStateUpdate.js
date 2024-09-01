@@ -60,6 +60,11 @@ module.exports = {
             }
             guildConfig.activeChannelCount++;
 
+            if (!guildData.globalActiveChannelCount) {
+                guildData.globalActiveChannelCount = 0;
+            }
+            guildData.globalActiveChannelCount++;
+
             saveData();
         }
 
@@ -78,6 +83,10 @@ module.exports = {
 
                 if (guildConfig.activeChannelCount > 0) {
                     guildConfig.activeChannelCount--;
+                }
+
+                if (guildData.globalActiveChannelCount > 0) {
+                    guildData.globalActiveChannelCount--;
                 }
 
                 saveData();
