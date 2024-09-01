@@ -4,7 +4,7 @@
 
 1. [Introduction](#introduction)
 2. [Screenshots](#screenshots)
-3. [How the VC are Saved (Database)](#how-the-vc-is-saved)
+3. [Data Structure](#data-structure)
 4. [How the Menu Command Works](#how-the-menu-command-works)
 5. [Handling Interactions](#handling-interactions)
 6. [Additional Features](#additional-features)
@@ -13,25 +13,87 @@
 
 The Discord Voice Channel Management Bot provides an enhanced interface for managing voice channels within a Discord server. This bot allows users to perform various actions on voice channels using both command inputs and interactive buttons. Features include locking/unlocking channels, setting user limits, inviting users, and more.
 
-## Screenshots:
+## Screenshots
 
 | ![alt text](.github/screenshots/image.png) | ![alt text](.github/screenshots/image-1.png) | ![alt text](.github/screenshots/image-2.png) |
 |:------------------------------------------:|:--------------------------------------------:|:--------------------------------------------:|
 | ![alt text](.github/screenshots/image-3.png) | ![alt text](.github/screenshots/image-5.png) | ![alt text](.github/screenshots/image-4.png) |
 |                                            |                                            |                                            |
 
+## Data Structure
 
-## How the VC is Saved (Database)
+The `data.json` file is organized into distinct sections, each serving a specific purpose in the management of Discord channels and global metrics. The primary sections include `guilds`, `totalChannelsCreated`, `activeChannels`, and `globalActiveChannelCount`.
 
-Voice channels are managed through an embedded data structure stored in a `data.json` file. The bot maintains this data to track voice channel ownership and related settings. 
+### 1. `guilds`
 
-1. **Voice Channel Creation**: When a user creates a new voice channel via the bot, the channel is registered in the `data.json` file under a `channels` object. Each entry includes the channel ID and the ID of the owner who created the channel.
+The `guilds` section maintains a detailed record of each guild's setup and active channels. Each entry is indexed by the guild's unique identifier (Guild ID). The data structure for each guild is as follows:
 
-2. **Channel Deletion**: If a voice channel is deleted, the bot removes the channel's record from the `data.json` file. If the channel was deleted but remains in the file with `ownerId` set to `null`, it indicates an error and should be cleaned up properly.
+- **Key**: `guildId` (String) - The unique identifier for the guild.
+- **Value**: An object containing:
+  - **`jtcCategoryId`** (String): The unique identifier of the category under which JTC channels are organized.
+  - **`jtcChannelId`** (String): The unique identifier of the primary voice channel used for channel creation (Join to Create).
+  - **`controlPanelChannelId`** (String): The unique identifier of the text channel that hosts the control panel interface.
+  - **`channels`** (Object): A mapping of voice channel IDs to their respective data. This includes:
+    - **Key**: `channelId` (String) - The unique identifier for each voice channel created by the bot.
+    - **Value**: An object with:
+      - **`ownerId`** (String): The unique identifier of the member who owns the channel.
+  - **`activeChannelCount`** (Integer): A count of the currently active voice channels within the guild.
 
-3. **Ownership Changes**: The bot allows users to claim ownership or transfer ownership of a voice channel. These changes are reflected in the `data.json` file, ensuring that the ownership details are up-to-date.
+**Example**:
+```json
+"guilds": {
+  "877062059966206002": {
+    "jtcCategoryId": "1279863632037154947",
+    "jtcChannelId": "1279863633584591094",
+    "controlPanelChannelId": "1279863635480543254",
+    "channels": {
+      "1279863633584591094": {
+        "ownerId": "123456789012345678"
+      }
+    },
+    "activeChannelCount": 1
+  }
+}
+```
 
-4. **Button Interactions**: Interactions with buttons such as "Lock", "Unlock", "Hide", and "Set Limit" are processed to update channel settings accordingly. The `data.json` file is updated to reflect any changes made through these actions.
+### 2. `totalChannelsCreated`
+
+This global counter tracks the total number of voice channels created by the bot across all guilds. It provides insight into the overall activity of channel creation.
+
+**Example**:
+```json
+"totalChannelsCreated": 2
+```
+
+### 3. `activeChannels`
+
+The `activeChannels` section records the active voice channels across all guilds. This section helps in managing the state of channels and is crucial for operations like setup deletion.
+
+- **Key**: `guildId` (String) - The unique identifier for the guild.
+- **Value**: An object where:
+  - **Key**: `channelId` (String) - The unique identifier for each active voice channel.
+  - **Value**: An object with:
+    - **`ownerId`** (String): The unique identifier of the member who owns the channel.
+
+**Example**:
+```json
+"activeChannels": {
+  "877062059966206002": {
+    "1279863633584591094": {
+      "ownerId": "123456789012345678"
+    }
+  }
+}
+```
+
+### 4. `globalActiveChannelCount`
+
+This global counter keeps track of the total number of active voice channels across all guilds. It aggregates the active channel count from the `activeChannels` section, providing a holistic view of channel activity.
+
+**Example**:
+```json
+"globalActiveChannelCount": 1
+```
 
 ## How the Menu Command Works
 
@@ -68,4 +130,3 @@ The bot processes different types of interactions using event handlers:
 
 > [!WARNING]
 > This is a multi-guild-bot. If you wish to use single-guild, move to this [branch](https://github.com/krushna06/JTC-Discord/tree/Single-Guild).
-> I won't be updating the single-guild.
