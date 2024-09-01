@@ -22,10 +22,16 @@ router.get('/:guildid/active', (req, res) => {
         return res.status(404).json({ error: 'Guild not found' });
     }
 
+    const guild = data.guilds[guildid];
     const activeChannels = Object.keys(data.activeChannels).reduce((result, channelId) => {
-        const channel = data.activeChannels[channelId];
-        if (data.guilds[guildid].channels[channelId]) {
-            result[channelId] = channel;
+        const activeChannel = data.activeChannels[channelId];
+        const channelInfo = guild.channels[channelId];
+
+        if (channelInfo) {
+            result[channelId] = {
+                createdAt: activeChannel.createdAt,
+                ownerId: channelInfo.ownerId,
+            };
         }
         return result;
     }, {});
