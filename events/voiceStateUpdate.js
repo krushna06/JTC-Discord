@@ -32,7 +32,7 @@ module.exports = {
                     },
                     {
                         id: guild.roles.everyone,
-                        deny: ['Connect'],
+                        allow: ['Connect'],
                     },
                 ],
             });
