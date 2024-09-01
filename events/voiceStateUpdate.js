@@ -42,6 +42,12 @@ module.exports = {
             guildConfig.channels[channel.id] = {
                 ownerId: member.id
             };
+
+            if (!guildData.totalChannelsCreated) {
+                guildData.totalChannelsCreated = 0;
+            }
+            guildData.totalChannelsCreated++;
+
             saveData();
         }
 
