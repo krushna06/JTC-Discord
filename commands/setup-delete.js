@@ -22,7 +22,7 @@ module.exports = {
         }
 
         const setup = guildData.guilds[interaction.guild.id];
-        const { jtcChannelId, controlPanelChannelId } = setup;
+        const { jtcChannelId, controlPanelChannelId, jtcCategoryId } = setup;
 
         try {
             const jtcChannel = interaction.guild.channels.cache.get(jtcChannelId);
@@ -30,6 +30,15 @@ module.exports = {
             
             const controlPanelChannel = interaction.guild.channels.cache.get(controlPanelChannelId);
             if (controlPanelChannel) await controlPanelChannel.delete();
+            
+            const jtcCategory = interaction.guild.channels.cache.get(jtcCategoryId);
+            if (jtcCategory && jtcCategory.type === ChannelType.GuildCategory) {
+                const channels = jtcCategory.children.cache;
+                for (const channel of channels.values()) {
+                    await channel.delete();
+                }
+                await jtcCategory.delete();
+            }
         } catch (error) {
             console.error('Error deleting channels:', error);
             return interaction.reply({ content: 'There was an error deleting the channels.', ephemeral: true });

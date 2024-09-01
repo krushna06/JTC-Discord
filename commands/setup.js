@@ -55,6 +55,7 @@ module.exports = {
         }
 
         guildData.guilds[interaction.guild.id] = {
+            jtcCategoryId: jtcCategory.id,
             jtcChannelId: jtcVoiceChannel.id,
             controlPanelChannelId: controlPanelChannel.id,
             channels: {}
@@ -82,7 +83,6 @@ module.exports = {
         )
         .setFooter({ text: 'Click the buttons below to perform actions on your voice channel.' });
     
-
         const row1 = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('lock').setEmoji('1278197399508226174').setStyle(ButtonStyle.Secondary),
             new ButtonBuilder().setCustomId('unlock').setEmoji('1278197548133257226').setStyle(ButtonStyle.Secondary),
