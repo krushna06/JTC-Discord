@@ -48,6 +48,18 @@ module.exports = {
             }
             guildData.totalChannelsCreated++;
 
+            if (!guildData.activeChannels) {
+                guildData.activeChannels = {};
+            }
+            guildData.activeChannels[channel.id] = {
+                createdAt: Date.now()
+            };
+
+            if (!guildConfig.activeChannelCount) {
+                guildConfig.activeChannelCount = 0;
+            }
+            guildConfig.activeChannelCount++;
+
             saveData();
         }
 
@@ -62,6 +74,12 @@ module.exports = {
                 await oldChannel.delete();
 
                 delete guildData.guilds[guildId].channels[oldChannel.id];
+                delete guildData.activeChannels[oldChannel.id];
+
+                if (guildConfig.activeChannelCount > 0) {
+                    guildConfig.activeChannelCount--;
+                }
+
                 saveData();
             } else if (oldChannel.members.size > 0 && channelInfo) {
                 if (channelInfo.ownerId === oldState.member.id) {
