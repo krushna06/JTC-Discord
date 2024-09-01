@@ -15,6 +15,8 @@ function capitalizeFirstLetter(string) {
 }
 
 module.exports = (client) => {
+    const guildRoutes = require('./api/v1/guild');
+    app.use('/api/v1', guildRoutes);
 
     app.get('/api/v1/info', (req, res) => {
         fs.readdir(commandsPath, (err, files) => {
