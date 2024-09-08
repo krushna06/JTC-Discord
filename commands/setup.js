@@ -67,20 +67,7 @@ module.exports = {
         .setColor('#2F3136')
         .setTitle('Voice Channel Management')
         .setDescription('Manage your voice channels using the buttons below:')
-        .addFields(
-            { name: '🔒 Lock', value: 'Locks the voice channel to prevent new users from joining.', inline: true },
-            { name: '🔓 Unlock', value: 'Unlocks the voice channel to allow new users to join.', inline: true },
-            { name: '👁️ Hide', value: 'Hides the voice channel from the server.', inline: true },
-            { name: '👁️‍🗨️ Unhide', value: 'Unhides the voice channel to make it visible in the server.', inline: true },
-            { name: '🔢 Set Limit', value: 'Sets a user limit for the voice channel.', inline: true },
-            { name: '📩 Invite', value: 'Sends an invite link for the voice channel.', inline: true },
-            { name: '🚫 Ban', value: 'Bans a user from the voice channel.', inline: true },
-            { name: '✅ Permit', value: 'Permits a user to join the voice channel.', inline: true },
-            { name: '✏️ Rename', value: 'Renames the voice channel.', inline: true },
-            { name: '🖊️ Claim', value: 'Claims ownership of the voice channel.', inline: true },
-            { name: '🔄 Transfer', value: 'Transfers ownership of the voice channel.', inline: true },
-            { name: '🌍 Region', value: 'Changes the voice channel region.', inline: true }
-        )
+        .setImage("https://i.postimg.cc/Kj3v4rJk/Untitled-design-11-removebg-preview.png")
         .setFooter({ text: 'Click the buttons below to perform actions on your voice channel.' });
     
         const row1 = new ActionRowBuilder().addComponents(
