@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const commandsPath = path.join(__dirname, '../../commands');
+const dataPath = path.join(__dirname, '../../data.json');
 
 const getCommandFiles = () => {
     try {
@@ -13,6 +14,17 @@ const getCommandFiles = () => {
     }
 };
 
+const getData = () => {
+    try {
+        const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+        return data;
+    } catch (err) {
+        console.error('Error reading data.json:', err);
+        throw err;
+    }
+};
+
 module.exports = {
     getCommandFiles,
+    getData,
 };
