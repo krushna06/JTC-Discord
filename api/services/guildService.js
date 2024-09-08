@@ -1,7 +1,5 @@
-const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const router = express.Router();
 
 const dataPath = path.join(__dirname, '../../data.json');
 
@@ -14,12 +12,11 @@ const readData = () => {
     }
 };
 
-router.get('/:guildid/active', (req, res) => {
-    const { guildid } = req.params;
+const getActiveChannels = (guildid) => {
     const data = readData();
 
     if (!data.guilds[guildid]) {
-        return res.status(404).json({ error: 'Guild not found' });
+        return null;
     }
 
     const guild = data.guilds[guildid];
@@ -36,7 +33,9 @@ router.get('/:guildid/active', (req, res) => {
         return result;
     }, {});
 
-    return res.json(activeChannels);
-});
+    return activeChannels;
+};
 
-module.exports = router;
+module.exports = {
+    getActiveChannels,
+};

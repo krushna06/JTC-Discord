@@ -1,6 +1,14 @@
 {
-  "guilds": {},
-  "totalChannelsCreated": 0,
+  "guilds": {
+    "877062059966206002": {
+      "jtcCategoryId": "1282279029113618444",
+      "jtcChannelId": "1282279030774824970",
+      "controlPanelChannelId": "1282279031630336051",
+      "channels": {},
+      "activeChannelCount": 0
+    }
+  },
+  "totalChannelsCreated": 11,
   "activeChannels": {},
   "globalActiveChannelCount": 0
 }

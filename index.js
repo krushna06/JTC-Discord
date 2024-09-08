@@ -52,7 +52,7 @@ client.once('ready', async () => {
     await logMessage(`Logged in as ${client.user.tag}`, 'cyan');
 
     if (config.api) {
-        require('./server')(client);
+        require('./api/server')(client);
     } else {
         console.log('API server is disabled in config.');
     }
